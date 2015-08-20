@@ -37,3 +37,21 @@ def classify0(inX,dataSet,labels,k):
 	sortedClassCount = sorted(classCount.iteritems(),
 						key = operator.itemgetter(1),reverse = True)
 	return sortedClassCount[0][0]
+
+def file2matrix(filename):
+	'''
+	输入为文件名字符串，输出为训练样本矩阵和类标签向量
+	'''
+	fr = open(filename)
+	arrayOLines = fr.readlines()
+	numberOfLines = len(arrayOLines)	#得到文件的行数
+	returnMat = zeros((numberOfLines,3)) #创建以零填充的矩阵，所用文件中文本数据是3类
+	classLabelVector = []
+	index = 0
+	for line in arrayOLines:
+		line = line.strip()		#截取掉所有的回车字符
+		listFromLine = line.split('\t')  #根据tab字符\t将整行数据分割成一个元素列表
+		returnMat[index,:] = listFromLine[0:3]	#选取前3个元素存储到特征矩阵
+		classLabelVector.append(int(listFromLine[-1]))	#列表中最后一列表示类标签
+		index += 1
+	return returnMat,classLabelVector
