@@ -26,3 +26,23 @@
 （4）使用@property:practise_use_property.py,practise_use_property2.py
 （5）使用定制类:自定义一些特殊的方法，如__str__,__iter__等，practise_Class_special.py
 （6）使用枚举类:practise_use_enum.py
+
+7.错误、调试和测试
+（1）错误处理:practise_do_try.py,practise_err_logging.py,practise_err_raise.py
+（2）调试:print方法,assert->practise_do_assert.py, logging->,practise_do_logging.py
+		  pdb方法，在命令行中使用python3 -m pdb file 可以启动pdb调试器->practise_use_pdb.py
+（3）单元测试:可以在命令行使用python3 -m unittest filename直接运行单元测试，这样可以批量测试；
+			  或者如mydict_test.py中添加最后两行代码。
+（4）文档测试：mydict2.py,fact_doctest.py
+8.IO编程
+（1）StringIO和BytesIO：do_stringIO.py,do_bytesIO.py
+（2）利用os模块实现在当前目录及其所有子目录下查找文件名包含特定字符串的文件：practise_select_filename.py
+（3）序列化：把变量从内存中变成可存储或传输的过程称之为序列化:
+			 Python中提供了pickle模块来实现。但pickle只适用于Python-->use_pickle.py
+			 JSON:use_json.py
+9.进程和线程
+（1）多进程：multi_processing.py,
+	使用Pool批量创建子进程：pool_processing.py,
+	使用subprocess模块创建子进程：do_subprocess.py
+	进程间的通信：do_queue.py
+（2）线程：
