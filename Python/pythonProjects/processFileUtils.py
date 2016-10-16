@@ -8,7 +8,6 @@ from __future__ import print_function
 from __future__ import division
 import os,sys
 import shutil
-import cv2
 
 # create folder from the filename in a txtFile
 def createFolder(filename, *dirPath):
@@ -30,9 +29,11 @@ def read_file(filePath='.'):
     filelists = sorted(filelists)
     for idx, _file in enumerate(filelists):
         path = os.path.join(filePath, _file)
-        print('processing',path)
+        #print('processing',path)
         if os.path.isfile(path):
-            newName = _file[:4] + str(idx) + _file[-4:]
+            names = os.path.split(filePath)
+            print("processing ",names[1])
+            newName = names[1] +"_"+ str(idx) + _file[-4:]
             newName = os.path.join(filePath, newName)
             os.rename(path, newName)
             #resizeImage(path, 1040)
@@ -60,8 +61,9 @@ def writeToTxt(path, txtPath, flag = 0):
         contents = [x for x in os.listdir(path)]
         contents = sorted(contents)
         for idx, content in enumerate(contents):
-            content = str(content) + ' ' + str(idx) + '\n'
+            content = str(content) +' ' + str(idx) +'\n'
             fw.writelines(content)
+
 # copy src file to dest file    
 def copyFile(src, dst):
     dirs = [x for x in os.listdir(src)]
@@ -69,19 +71,102 @@ def copyFile(src, dst):
     for idx, name in enumerate(dirs):
         imageDir = os.path.join(src, name)
         images = [x for x in os.listdir(imageDir)]
+        newDirName = ""
+        for n in name:
+            if not str.isdigit(n):
+                newDirName += str(n)
+        print("processing ",newDirName)
         for n,img in enumerate(images):
             imgPath = os.path.join(imageDir, img)
-            dstImagePath = os.path.join(dst,*(name,img))
+            dstImagePath = os.path.join(dst,*(newDirName,img))
+            dstDirPath = os.path.join(dst,newDirName)
+            if not os.path.isdir(dstDirPath):
+                os.mkdir(dstDirPath)
+            #print("processing ",dstImagePath)
             shutil.copyfile(imgPath, dstImagePath)
-            
+
+# count file numbers and record to a txt
+def recordFileNums(dirPath,txtPath):
+    with open(txtPath,'w') as fw:
+        dirs = [x for x in os.listdir(dirPath)]
+        dirs = sorted(dirs)
+        lens = len(dirs)
+        
+        lessClass = 0
+        totalImages = 0
+        lessClassNums = []
+        MoreClassNums = 0
+        MoreClass = []
+        for dir in dirs:
+            newDirPath = os.path.join(dirPath,dir)
+            files = [x for x in os.listdir(newDirPath)]
+            fileLength = len(files)
+            if fileLength <= 50:
+                lessClass += 1
+                lessClassNums.append(dir)
+            else:
+                totalImages += fileLength
+            if fileLength >= 50:
+                MoreClassNums += 1
+                MoreClass.append(dir)
+
+            content = dir + " " + str(fileLength)+"\n"
+            fw.writelines(content)
+        fw.writelines("class numbers = "+str(lens)+"\n")
+        contents = "totalImages = "+str(totalImages)+"\n"
+        fw.writelines(contents)
+        fw.writelines(contents)
+
+# 将一个文件夹中的文件路径写在txt文件中   
+def writeFilePath(dirPath,txtPath):
+    files = [x for x in os.listdir(dirPath)]
+    names = os.path.split(dirPath)
+    recordTxtPath = os.path.join(txtPath,names[1]+".txt")
+   
+    files = sorted(files)
+    lens = len(files) 
+    print("processing ",names[1],lens)
+    fw = open(recordTxtPath,"w")
+    for _file in files:
+        filePath = os.path.join(dirPath,_file)
+        fw.writelines(filePath+"\n")
+    fw.close()
+
+
+
 
 if __name__ == '__main__':
-    rootPath = '/home/cai/dataset/foodIngredients/'
-    folder_path = '/home/cai/dataset/foodIngredients/images/'
-    txtFile = folder_path + 'camera_classes.txt'
-    labelTxtPath = folder_path + 'camera_label.txt'
+    rootPath = "D:\\研究生\\Dataset\\foodIngredients-70"
+    dstPath = "D:\\研究生\\Dataset\\foodIngredients-70\\Images"
+    srcPath = "D:\\研究生\\Dataset\\foodIngredients-70\\新建文件夹"
     
-    dir2 = folder_path + 'total_trainImages/'     
-    dir1 = folder_path + 'camera_trainImages/'
-    dir3 = folder_path + 'trainImages/'    
-    copyFile(dir3, dir2)
+    classTxtPath = os.path.join(rootPath,"class.txt")
+    recordTxtPath =os.path.join(rootPath,"record.txt")
+    labelTxtPath = os.path.join(rootPath,"label.txt")
+    txtDirPath = os.path.join(rootPath,"totalImagesTxt")
+    trainImagePath=os.path.join(rootPath,"Images-original","trainImages")
+    testImagePath=os.path.join(rootPath,"Images-original","testImages")
+
+    #createFolder(classTxtPath,testImagePath)
+
+
+    dirs=[x for x in os.listdir(testImagePath)]
+    for _dir in dirs:
+        imageDir = os.path.join(testImagePath,_dir)
+        images = [x for x in os.listdir(imageDir)]
+        for img in images:
+            imagePath = os.path.join(imageDir,img)
+            newImagePath = os.path.join(rootPath,"Images-original","Images",_dir,img)
+            print(newImagePath)
+            #print("original imagePath--",imagePath)
+            shutil.copyfile(imagePath,newImagePath)
+            
+        
+
+    #recordFileNums(dstPath,recordTxtPath)
+    #writeToTxt(dstPath,labelTxtPath)
+    #read_file(dstPath)
+
+    #copyFile(srcPath,dstPath)
+
+

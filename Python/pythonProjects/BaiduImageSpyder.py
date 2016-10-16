@@ -9,6 +9,7 @@ Created on Tue Oct 20 16:13:45 2015
 import urllib
 import time
 import os
+import sys
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import socket
@@ -28,11 +29,11 @@ class Crawler(object):
         # set the max images per class to downloads
         self.maxImages = 10
         # set file path
-        self.rootPath = '/home/cai/dataset/'
-        self.imageFilePath = self.rootPath + 'foodIngredients/web_testImages/'
-        self.filePath = self.rootPath + 'test/'
-        self.txtFile = self.rootPath + 'foodIngredients/images/classes.txt'
-        self.logFile = self.rootPath + 'imageMessage.txt'
+        self.rootPath = 'D:\\图片\\test'
+        self.imageFilePath = self.rootPath + '\\web_testImages\\'
+        self.filePath = self.rootPath
+        self.txtFile = self.rootPath + '\\classes.txt'
+        self.logFile = self.rootPath + '\\imageMessage.txt'
         self.flog = open(self.logFile, 'w')  
         # classes
         self.classes = 0
@@ -58,7 +59,7 @@ class Crawler(object):
         pos = 0
         i = 0
         count = 0
-        print 'Downloading', unicode(name)
+        print('Downloading', (name))
         while (count < maxImgs):
             # 模拟滚动窗口以浏览下载更多图片
             pos += i * 500
@@ -75,7 +76,7 @@ class Crawler(object):
                 img_desc = img_desc_element.get_attribute('data-title')
                 img_desc = self.filter_filename_str(img_desc)
                 
-                if img_url != None and not img_url_dic.has_key(img_url):
+                if img_url != None and not img_url in img_url_dic:
                     img_url_dic[img_url] = ''
                     ext = img_url.split('.')[-1]
                     imagePath = self.imageFilePath + \
@@ -87,9 +88,11 @@ class Crawler(object):
                     
                     try:
                          #urllib.urlretrieve(img_url, imagePath)
-                        urlopen = urllib.URLopener()
+                        # urlopen = urllib.URLopener() only work in Python2.x
+                        # this for python 3
+
                         # 下载图片
-                        fp = urlopen.open(img_url)
+                        fp = urllib.request.urlopen(img_url)
                         data = fp.read()
                         # 清除并以二进制写入
                         imageFile = open(imagePath, 'wb')
@@ -101,10 +104,10 @@ class Crawler(object):
                         # 统计成功下载图片的数量
                         count += 1
                         time.sleep(1)
-                        print 'class ' + str(self.classes) + ', finish ' + str(count)
-                    except IOError, e:
+                        print('class ' + str(self.classes) + ', finish ' + str(count))
+                    except IOError as e:
                         flog.writelines("%s %s %s\n" % (imagePath,e,img_url))
-                        print "Fail download %s ... Error %s" % ( img_url,e)
+                        print("Fail download %s ... Error %s" % ( img_url,e))
                         
                 if count >= maxImgs:
                     break
@@ -127,7 +130,7 @@ class Crawler(object):
         for idx in range(lens):
             elem = driver.find_element_by_name('word')
             name = searchNames[idx].strip()
-            searchContent = unicode(name)
+            searchContent = name
             elem.send_keys(searchContent)
             elem.send_keys(Keys.RETURN)
             #assert unicode(name) in driver.title
@@ -135,24 +138,24 @@ class Crawler(object):
             # start to download the image
             self.classes = idx
             downloadImgs = self.downloads(driver, name)
-            info = unicode(name) + ' has downloads ' + str(downloadImgs) + ' images.'
-            print info
+            info = name + ' has downloads ' + str(downloadImgs) + ' images.'
+            print(info)
             results[name] = downloadImgs
             self.classes += 1
             # clear the content of the search box
             elem = driver.find_element_by_name('word')
             elem.clear()
         
-        print 'Done!'
+        print('Done!')
         driver.close()
         
         # print the final result
         totalImgs = 0
         for key, value in results.items():
-            print key + ': ' + str(value)
+            print(key + ': ' + str(value))
             totalImgs += value
-        print 'There are ' + str(self.classes) + ' classes' + \
-                ', total Images are ' + str(totalImgs)
+        print('There are ' + str(self.classes) + ' classes' + \
+                ', total Images are ' + str(totalImgs))
     
     # filter invalid characters in filename
     def filter_filename_str(self, s):
