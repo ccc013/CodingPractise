@@ -89,7 +89,7 @@ def predict_all(X, all_theta):
 
     return h_argmax
 
-dataPath = os.path.join('E:\\ipython-notebooks\\data', 'ex3data1.mat')
+dataPath = os.path.join('data', 'ex3data1.mat')
 # 载入数据
 data = loadmat(dataPath)
 print(data)

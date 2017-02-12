@@ -35,7 +35,7 @@ def gradientDescent(X, y, theta, alpha, iters):
         cost[i] = computeCost(X, y, theta)
     return theta, cost
 
-dataPath = os.path.join('E:\\ipython-notebooks\\data', 'ex1data1.txt')
+dataPath = os.path.join('data', 'ex1data1.txt')
 data = pd.read_csv(dataPath, header=None, names=['Population', 'Profit'])
 # print(data.head())
 # print(data.describe())
