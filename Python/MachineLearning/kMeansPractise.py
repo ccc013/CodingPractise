@@ -68,7 +68,7 @@ def run_k_means(X, initial_centroids, max_iters):
 
     return idx, centroids
 
-dataPath = os.path.join('E:\\ipython-notebooks\\data', 'ex7data2.mat')
+dataPath = os.path.join('data', 'ex7data2.mat')
 data = loadmat(dataPath)
 X = data['X']
 
@@ -85,15 +85,15 @@ cluster1 = X[np.where(idx == 0)[0], :]
 cluster2 = X[np.where(idx == 1)[0], :]
 cluster3 = X[np.where(idx == 2)[0], :]
 
-# fig, ax = plt.subplots(figsize=(12, 8))
-# ax.scatter(cluster1[:, 0], cluster1[:, 1], s=30, color='r', label='Cluster 1')
-# ax.scatter(cluster2[:, 0], cluster2[:, 1], s=30, color='g', label='Cluster 2')
-# ax.scatter(cluster3[:, 0], cluster3[:, 1], s=30, color='b', label='Cluster 3')
-# ax.legend()
-# plt.show()
+fig, ax = plt.subplots(figsize=(12, 8))
+ax.scatter(cluster1[:, 0], cluster1[:, 1], s=30, color='r', label='Cluster 1')
+ax.scatter(cluster2[:, 0], cluster2[:, 1], s=30, color='g', label='Cluster 2')
+ax.scatter(cluster3[:, 0], cluster3[:, 1], s=30, color='b', label='Cluster 3')
+ax.legend()
+plt.show()
 
 # 载入一张测试图片，进行测试
-imageDataPath = os.path.join('E:\\ipython-notebooks\\data', 'bird_small.mat')
+imageDataPath = os.path.join('data', 'bird_small.mat')
 image = loadmat(imageDataPath)
 # print(image)
 
@@ -117,8 +117,8 @@ X_recovered = centroids[idx.astype(int), :]
 # reshape to the original dimensions
 X_recovered = np.reshape(X_recovered, (A.shape[0], A.shape[1], A.shape[2]))
 
-plt.imshow(X_recovered)
-
+# plt.imshow(X_recovered)
+# plt.show()
 
 
 
